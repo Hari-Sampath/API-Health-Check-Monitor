@@ -1,0 +1,134 @@
+project:
+  name: Smart API Monitoring System
+  version: 1.0
+
+settings:
+  timeout: 5
+  retries: 2
+  retry_delay: 2
+  default_method: GET
+
+apis:
+  # ---------------- GOOD APIS ----------------
+  - name: GitHub Public API
+    group: good
+    url: https://api.github.com
+    method: GET
+    headers: {}
+    params: {}
+    body: null
+    expected:
+      status: 200
+      response_time_ms: 1000
+
+  - name: JSONPlaceholder Posts
+    group: good
+    url: https://jsonplaceholder.typicode.com/posts
+    method: GET
+    headers: {}
+    params: {}
+    body: null
+    expected:
+      status: 200
+      response_time_ms: 1500
+
+  - name: HTTPBin GET
+    group: good
+    url: https://httpbin.org/get
+    method: GET
+    headers: {}
+    params:
+      test: monitoring
+    body: null
+    expected:
+      status: 200
+      response_time_ms: 1200
+      response_contains: "monitoring"
+
+  - name: HTTPBin Delay (Performance Test)
+    group: good
+    url: https://httpbin.org/delay/2
+    method: GET
+    headers: {}
+    params: {}
+    body: null
+    expected:
+      status: 200
+      response_time_ms: 3000
+
+  - name: Google Books API
+    group: good
+    url: https://www.googleapis.com/books/v1/volumes
+    method: GET
+    headers: {}
+    params:
+      q: python
+    body: null
+    expected:
+      status: 200
+      response_time_ms: 1500
+      response_contains: "items"
+
+  - name: Open-Meteo Weather API
+    group: good
+    url: https://api.open-meteo.com/v1/forecast
+    method: GET
+    headers: {}
+    params:
+      latitude: 17.3850
+      longitude: 78.4867
+      current_weather: true
+    body: null
+    expected:
+      status: 200
+      response_time_ms: 1500
+      response_contains: "temperature"
+
+  # ---------------- BAD APIS ----------------
+  - name: GitHub Invalid Endpoint
+    group: bad
+    url: https://api.github.com/invalid-endpoint
+    method: GET
+    headers: {}
+    params: {}
+    body: null
+    expected:
+      status: 404
+      response_time_ms: 1000
+
+  - name: JSONPlaceholder Invalid Resource
+    group: bad
+    url: https://jsonplaceholder.typicode.com/invalid
+    method: GET
+    headers: {}
+    params: {}
+    body: null
+    expected:
+      status: 404
+      response_time_ms: 1500
+
+  - name: HTTPBin 500 Error Simulation
+    group: bad
+    url: https://httpbin.org/status/500
+    method: GET
+    headers: {}
+    params: {}
+    body: null
+    expected:
+      status: 500
+      response_time_ms: 1200
+
+  - name: HTTPBin Unauthorized Access
+    group: bad
+    url: https://httpbin.org/status/401
+    method: GET
+    headers: {}
+    params: {}
+    body: null
+    expected:
+      status: 401
+      response_time_ms: 1200
+
+scheduler:
+  enabled: true
+  interval_seconds: 60
