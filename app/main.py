@@ -1,4 +1,3 @@
-import config
 import network
 import storage
 import validator
@@ -10,4 +9,6 @@ with open("apis.yaml", "r") as yaml_data:
 global_settings = yaml_file["settings"]  # global settings
 api_info = yaml_file["apis"]  # list with information of apis
 
-network.get_data()
+responses = network.get_status(api_info, global_settings)
+
+outputs = validator.validate(responses)
