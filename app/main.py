@@ -2,3 +2,12 @@ import config
 import network
 import storage
 import validator
+import yaml
+
+with open("apis.yaml", "r") as yaml_data:
+    yaml_file = yaml.safe_load(yaml_data)
+
+global_settings = yaml_file["settings"]  # global settings
+api_info = yaml_file["apis"]  # list with information of apis
+
+network.get_data()
