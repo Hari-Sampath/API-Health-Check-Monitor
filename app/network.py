@@ -22,19 +22,38 @@ def get_status(api_config, global_settings):
             start_time = time.time()  # starting the stop watch
 
             try:
-                response = requests.request(method=method, url=url, timeout=timeout)
+                if method == "GET":
+                    output = requests.get(url=url, timeout=timeout)
 
-                elapsed_time = round((time.time() - start_time) * 1000)
-                print(f"Success, took {elapsed_time}ms")
+                    elapsed_time = round((time.time() - start_time) * 1000)
+                    print(f"Success, took {elapsed_time}ms")
 
-                result.append(
-                    {
-                        "api_name": api["name"],
-                        "response_code": response.status_code,
-                        "time": elapsed_time,
-                    }
-                )
-                break
+                    result.append(
+                        {
+                            "api_name": api["name"],
+                            "response_code": output.status_code,
+                            "time": elapsed_time,
+                            "output": output.text,
+                        }
+                    )
+                    break
+
+                else:
+                    response = requests.request(method=method, url=url, timeout=timeout)
+
+                    elapsed_time = round((time.time() - start_time) * 1000)
+                    print(f"Success, took {elapsed_time}ms")
+
+                    result.append(
+                        {
+                            "api_name": api["name"],
+                            "response_code": response.status_code,
+                            "time": elapsed_time,
+                            "output": "NONE",
+                        }
+                    )
+
+                    break
 
             except requests.exceptions.RequestException as e:
                 if attempt < retries:
