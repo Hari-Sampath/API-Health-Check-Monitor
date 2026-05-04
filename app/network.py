@@ -23,7 +23,7 @@ def get_status(api_config, global_settings):
 
             try:
                 if method == "GET":
-                    output = requests.get(url=url, timeout=timeout)
+                    output = requests.get(url=url, timeout=timeout, params=params)
 
                     elapsed_time = round((time.time() - start_time) * 1000)
                     print(f"Success, took {elapsed_time}ms")
@@ -39,7 +39,9 @@ def get_status(api_config, global_settings):
                     break
 
                 else:
-                    response = requests.request(method=method, url=url, timeout=timeout)
+                    response = requests.request(
+                        method=method, url=url, timeout=timeout, params=params
+                    )
 
                     elapsed_time = round((time.time() - start_time) * 1000)
                     print(f"Success, took {elapsed_time}ms")

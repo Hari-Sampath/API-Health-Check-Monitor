@@ -14,7 +14,7 @@ def validate(responses, api_info):
         if "response_contains" in expected:
             response_contains.append(expected["response_contains"])
         else:
-            response_contains.append("No Params")
+            response_contains.append("No params")
 
     for response in responses:
         if response["time"] > expected_time[j]:
@@ -27,9 +27,9 @@ def validate(responses, api_info):
         else:
             health = "Faulty"
 
-        if response_contains == "No params":
+        if response_contains[j] == "No params":
             valid = "Accurate response provided"
-        elif "response_contains" in response["output"]:
+        elif response_contains[j] in response["output"]:
             valid = "Accurate response provided"
         else:
             valid = "Inaccurate response provided"
@@ -37,9 +37,9 @@ def validate(responses, api_info):
         report.append(
             {
                 "Name": response["api_name"],
-                "health": health,
-                "speed": speed,
-                "valid": valid,
+                "Health": health,
+                "Speed": speed,
+                "Validity": valid,
             }
         )
     j += 1
