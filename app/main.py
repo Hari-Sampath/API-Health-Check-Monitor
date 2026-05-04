@@ -11,4 +11,6 @@ api_info = yaml_file["apis"]  # list with information of apis
 
 responses = network.get_status(api_info, global_settings)
 
-print(responses[0])
+report = validator.validate(responses, api_info)
+
+print(report)
