@@ -1,15 +1,8 @@
 import time
 
 import requests
-import yaml
 
-with open("apis.yaml", "r") as yaml_data:
-    yaml_file = yaml.safe_load(yaml_data)
-
-global_settings = yaml_file["settings"]  # global settings
-api_config = yaml_file["apis"]  # list with information of apis
-
-i = 0
+result = []
 
 
 def get_status(api_config, global_settings):
@@ -25,18 +18,36 @@ def get_status(api_config, global_settings):
         retry_delay = global_settings["retry_delay"]
         default_method = global_settings["default_method"]
 
-        result = []
-
         for attempt in range(retries + 1):
-
             start_time = time.time()  # starting the stop watch
 
             try:
-                output = requests.get(url)
+                response = requests.request(method=method, url=url, timeout=timeout)
 
-            result.append(
-                {"response_time": start_time, "response_code": code, "output": output}
-            )
+                elapsed_time = round((time.time() - start_time) * 1000)
+                print(f"Success, took {elapsed_time}ms")
 
+                result.append(
+                    {
+                        "api_name": api["name"],
+                        "response_code": response.status_code,
+                        "time": elapsed_time,
+                    }
+                )
+                break
 
-get_status(api_config, global_settings)
+            except requests.exceptions.RequestException as e:
+                if attempt < retries:
+                    print(f"  Failed. Retrying in {retry_delay} seconds...")
+                    time.sleep(retry_delay)
+                else:
+                    print("  Completely failed after retries.")
+                    result.append(
+                        {
+                            "api_name": api["name"],
+                            "response_code": "ERROR",
+                            "time": 0,
+                        }
+                    )
+
+    return result
