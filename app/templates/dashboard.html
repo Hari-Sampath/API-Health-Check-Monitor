@@ -1,0 +1,599 @@
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap");
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        background: #080c14;
+        min-height: 100vh;
+    }
+
+    .mon-root {
+        font-family: "DM Sans", sans-serif;
+        background: #080c14;
+        color: #c9d4e8;
+
+        overflow: hidden;
+        min-height: 600px;
+        border: 1px solid rgba(99, 140, 255, 0.12);
+    }
+
+    .mon-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 24px;
+        background: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid rgba(99, 140, 255, 0.1);
+    }
+
+    .mon-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mon-pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #22d47a;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%,
+        100% {
+            box-shadow: 0 0 0 0 rgba(34, 212, 122, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 0 6px rgba(34, 212, 122, 0);
+        }
+    }
+
+    .mon-title {
+        font-family: "Space Mono", monospace;
+        font-size: 14px;
+        font-weight: 700;
+        color: #e8edf8;
+        letter-spacing: 0.04em;
+    }
+
+    .mon-subtitle {
+        font-size: 11px;
+        color: #4a5a7a;
+        font-family: "Space Mono", monospace;
+    }
+
+    .mon-run-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        background: rgba(99, 140, 255, 0.12);
+        border: 1px solid rgba(99, 140, 255, 0.3);
+        border-radius: 8px;
+        color: #8aadff;
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .mon-run-btn:hover {
+        background: rgba(99, 140, 255, 0.22);
+        border-color: rgba(99, 140, 255, 0.5);
+        color: #c0d4ff;
+    }
+    .mon-run-btn.running {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .spin {
+        display: inline-block;
+        animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .mon-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        background: rgba(99, 140, 255, 0.08);
+        border-bottom: 1px solid rgba(99, 140, 255, 0.08);
+    }
+
+    .mon-stat {
+        background: #080c14;
+        padding: 20px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mon-stat::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+    }
+
+    .mon-stat.s-total::before {
+        background: linear-gradient(90deg, #638cff, transparent);
+    }
+    .mon-stat.s-ok::before {
+        background: linear-gradient(90deg, #22d47a, transparent);
+    }
+    .mon-stat.s-bad::before {
+        background: linear-gradient(90deg, #ff5c5c, transparent);
+    }
+    .mon-stat.s-time::before {
+        background: linear-gradient(90deg, #f59e0b, transparent);
+    }
+
+    .mon-stat-num {
+        font-family: "Space Mono", monospace;
+        font-size: 28px;
+        font-weight: 700;
+        color: #e8edf8;
+        line-height: 1;
+        margin-bottom: 6px;
+    }
+
+    .mon-stat-label {
+        font-size: 11px;
+        color: #4a5a7a;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .mon-body {
+        padding: 20px 24px;
+    }
+
+    .mon-section-label {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        color: #4a5a7a;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 12px;
+    }
+
+    .mon-table-wrap {
+        border: 1px solid rgba(99, 140, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    table.mon-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    table.mon-table thead tr {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    table.mon-table th {
+        padding: 10px 14px;
+        text-align: left;
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        color: #3d4f6e;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 400;
+        border-bottom: 1px solid rgba(99, 140, 255, 0.08);
+    }
+
+    table.mon-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(99, 140, 255, 0.05);
+        vertical-align: middle;
+    }
+    table.mon-table tr:last-child td {
+        border-bottom: none;
+    }
+    table.mon-table tbody tr {
+        transition: background 0.15s;
+    }
+    table.mon-table tbody tr:hover {
+        background: rgba(99, 140, 255, 0.04);
+    }
+
+    .mon-api-name {
+        font-weight: 500;
+        color: #c9d4e8;
+        font-size: 13px;
+    }
+
+    .mon-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 5px;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .mon-badge-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+    }
+
+    .badge-ok {
+        background: rgba(34, 212, 122, 0.1);
+        color: #22d47a;
+    }
+    .badge-ok .mon-badge-dot {
+        background: #22d47a;
+    }
+    .badge-bad {
+        background: rgba(255, 92, 92, 0.1);
+        color: #ff5c5c;
+    }
+    .badge-bad .mon-badge-dot {
+        background: #ff5c5c;
+        animation: pulse-r 1.2s ease infinite;
+    }
+    .badge-warn {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+    .badge-warn .mon-badge-dot {
+        background: #f59e0b;
+    }
+
+    @keyframes pulse-r {
+        0%,
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 92, 92, 0.5);
+        }
+        50% {
+            box-shadow: 0 0 0 4px rgba(255, 92, 92, 0);
+        }
+    }
+
+    .mon-speed {
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        color: #6a80a8;
+    }
+    .mon-speed.fast {
+        color: #22d47a;
+    }
+    .mon-speed.slow {
+        color: #f59e0b;
+    }
+    .mon-speed.vslow {
+        color: #ff5c5c;
+    }
+
+    .mon-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .mon-bar-bg {
+        flex: 1;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    .mon-bar-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition: width 0.5s ease;
+    }
+
+    .mon-valid-ok {
+        color: #22d47a;
+        font-size: 12px;
+        font-family: "Space Mono", monospace;
+    }
+    .mon-valid-bad {
+        color: #ff5c5c;
+        font-size: 12px;
+        font-family: "Space Mono", monospace;
+    }
+
+    .mon-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 13px;
+        border: 1px solid;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .mon-alert.critical {
+        background: rgba(255, 92, 92, 0.06);
+        border-color: rgba(255, 92, 92, 0.2);
+        color: #ff9999;
+    }
+    .mon-alert.warning {
+        background: rgba(245, 158, 11, 0.06);
+        border-color: rgba(245, 158, 11, 0.2);
+        color: #fcd06a;
+    }
+    .mon-alert.info {
+        background: rgba(99, 140, 255, 0.06);
+        border-color: rgba(99, 140, 255, 0.2);
+        color: #8aadff;
+    }
+
+    .mon-alert-lvl {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        padding: 2px 7px;
+        border-radius: 4px;
+        white-space: nowrap;
+        margin-top: 1px;
+    }
+
+    .critical .mon-alert-lvl {
+        background: rgba(255, 92, 92, 0.15);
+        color: #ff5c5c;
+    }
+    .warning .mon-alert-lvl {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+    }
+    .info .mon-alert-lvl {
+        background: rgba(99, 140, 255, 0.15);
+        color: #638cff;
+    }
+
+    .mon-empty {
+        text-align: center;
+        padding: 40px;
+        color: #3d4f6e;
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+    }
+
+    .mon-error {
+        text-align: center;
+        padding: 30px;
+        color: #ff7a7a;
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        border: 1px solid rgba(255, 92, 92, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 92, 92, 0.05);
+        margin-top: 8px;
+    }
+</style>
+
+<div class="mon-root">
+    <div class="mon-header">
+        <div class="mon-logo">
+            <div class="mon-pulse"></div>
+            <div>
+                <div class="mon-title">API_HEALTH_MONITOR</div>
+                <div class="mon-subtitle" id="statusLine">
+                    v2.0 · awaiting check
+                </div>
+            </div>
+        </div>
+        <button class="mon-run-btn" id="runBtn" onclick="runCheck()">
+            <span id="btnIcon">▶</span> RUN CHECK
+        </button>
+    </div>
+
+    <div class="mon-stats">
+        <div class="mon-stat s-total">
+            <div class="mon-stat-num" id="total">—</div>
+            <div class="mon-stat-label">Total APIs</div>
+        </div>
+        <div class="mon-stat s-ok">
+            <div class="mon-stat-num" id="okCount">—</div>
+            <div class="mon-stat-label">Healthy</div>
+        </div>
+        <div class="mon-stat s-bad">
+            <div class="mon-stat-num" id="badCount">—</div>
+            <div class="mon-stat-label">Issues</div>
+        </div>
+        <div class="mon-stat s-time">
+            <div
+                class="mon-stat-num"
+                id="lastRun"
+                style="font-size: 16px; padding-top: 6px"
+            >
+                —
+            </div>
+            <div class="mon-stat-label">Last Run</div>
+        </div>
+    </div>
+
+    <div class="mon-body">
+        <div class="mon-section-label">Endpoints</div>
+        <div class="mon-table-wrap">
+            <table class="mon-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>API</th>
+                        <th>Status</th>
+                        <th>Latency</th>
+                        <th>Speed</th>
+                        <th>Valid</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    <tr>
+                        <td colspan="6" class="mon-empty">
+                            Press RUN CHECK to fetch live data
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="alerts"></div>
+    </div>
+</div>
+
+<script>
+    function isOk(h) {
+        return /healthy|^200$/i.test(String(h));
+    }
+    function isBad(h) {
+        return /faulty|error|fail|timeout|[45]\d\d/i.test(String(h));
+    }
+
+    function speedClass(ms) {
+        if (ms == null) return "";
+        return ms < 200 ? "fast" : ms < 1000 ? "slow" : "vslow";
+    }
+
+    function speedBarColor(ms) {
+        if (ms == null) return "#3d4f6e";
+        return ms < 200 ? "#22d47a" : ms < 1000 ? "#f59e0b" : "#ff5c5c";
+    }
+
+    function render(reports, issues) {
+        const tbody = document.getElementById("tbody");
+        tbody.innerHTML = "";
+        let okCount = 0;
+
+        reports.forEach((api, i) => {
+            const health = String(api.health || api.Health || "");
+            const name = api.name || api.Name || "—";
+            const speed = api.speed ?? null;
+            const valid = api.valid || "—";
+
+            const ok = isOk(health);
+            const bad = !ok && isBad(health);
+            if (ok) okCount++;
+
+            const badgeClass = ok
+                ? "badge-ok"
+                : bad
+                  ? "badge-bad"
+                  : "badge-warn";
+            const badgeLabel = ok ? "OK" : health.toUpperCase();
+            const sc = speedClass(speed);
+            const speedLabel = speed != null ? speed : "—";
+            const barColor = speedBarColor(speed);
+            const barW =
+                speed != null ? Math.min(100, (speed / 3500) * 100) : 0;
+            const validClass =
+                valid === "OK"
+                    ? "mon-valid-ok"
+                    : valid === "FAIL"
+                      ? "mon-valid-bad"
+                      : "";
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+        <td style="font-family:'Space Mono',monospace;font-size:11px;color:#3d4f6e;">${String(i + 1).padStart(2, "0")}</td>
+        <td class="mon-api-name">${name}</td>
+        <td>
+          <span class="mon-badge ${badgeClass}">
+            <span class="mon-badge-dot"></span>${badgeLabel}
+          </span>
+        </td>
+        <td>
+          <div class="mon-bar-wrap">
+            <div class="mon-bar-bg">
+              <div class="mon-bar-fill" style="width:${barW}%;background:${barColor};"></div>
+            </div>
+            <span class="mon-speed ${sc}">${speedLabel}</span>
+          </div>
+        </td>
+        <td style="font-family:'Space Mono',monospace;font-size:11px;color:#3d4f6e;">${speedLabel}</td>
+        <td class="${validClass}">${valid}</td>
+      `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById("total").textContent = reports.length;
+        document.getElementById("okCount").textContent = okCount;
+        document.getElementById("badCount").textContent =
+            reports.length - okCount;
+        document.getElementById("lastRun").textContent =
+            new Date().toLocaleTimeString();
+        document.getElementById("statusLine").textContent = "v2.0 · live";
+
+        const alertBox = document.getElementById("alerts");
+        alertBox.innerHTML = "";
+
+        if (issues && issues.length) {
+            const label = document.createElement("div");
+            label.className = "mon-section-label";
+            label.style.marginTop = "16px";
+            label.textContent = "Alerts";
+            alertBox.appendChild(label);
+
+            issues.forEach((issue) => {
+                const cls =
+                    issue.level === "CRITICAL"
+                        ? "critical"
+                        : issue.level === "WARNING"
+                          ? "warning"
+                          : "info";
+                const div = document.createElement("div");
+                div.className = `mon-alert ${cls}`;
+                div.innerHTML = `
+          <span class="mon-alert-lvl">${issue.level}</span>
+          <span><strong style="color:inherit;">${issue.api}</strong> — ${issue.message}</span>
+        `;
+                alertBox.appendChild(div);
+            });
+        }
+    }
+
+    async function runCheck() {
+        const btn = document.getElementById("runBtn");
+        const icon = document.getElementById("btnIcon");
+        btn.classList.add("running");
+        icon.innerHTML = '<span class="spin">↻</span>';
+        document.getElementById("statusLine").textContent = "v2.0 · checking…";
+
+        try {
+            const res = await fetch("/run-check");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            render(data.reports, data.issues);
+        } catch (err) {
+            const tbody = document.getElementById("tbody");
+            tbody.innerHTML = `<tr><td colspan="6" class="mon-empty" style="color:#ff7a7a;">Failed to reach /run-check — ${err.message}</td></tr>`;
+            document.getElementById("statusLine").textContent = "v2.0 · error";
+        } finally {
+            btn.classList.remove("running");
+            icon.textContent = "▶";
+        }
+    }
+</script>
