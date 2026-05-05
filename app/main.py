@@ -1,8 +1,8 @@
+import alerts
 import network
 import storage
 import validator
 import yaml
-import alerts
 
 
 def run_monitor():
@@ -31,7 +31,9 @@ def main():
     print("-" * 90)
 
     for api in report:
-        print(f"{api['Name']:30} | {api['health']:10} | {api['speed']:20} | {api['valid']}")
+        print(
+            f"{api['Name']:30} | {api['health']:10} | {api['speed']:20} | {api['valid']}"
+        )
 
     print("-" * 90)
 

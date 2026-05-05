@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def generate_alerts(report):
     alerts = []
 
@@ -24,11 +25,13 @@ def generate_alerts(report):
                 level = "INFO"
 
         if issues:
-            alerts.append({
-                "level": level,
-                "api": api["Name"],
-                "message": ", ".join(issues),
-                "timestamp": datetime.now().isoformat()
-            })
+            alerts.append(
+                {
+                    "level": level,
+                    "api": api["Name"],
+                    "message": ", ".join(issues),
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
     return alerts
