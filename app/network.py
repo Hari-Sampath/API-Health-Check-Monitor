@@ -2,10 +2,9 @@ import time
 
 import requests
 
-result = []
-
 
 def get_status(api_config, global_settings):
+    result = []
     for api in api_config:
         url = api["url"]
         method = api["method"]

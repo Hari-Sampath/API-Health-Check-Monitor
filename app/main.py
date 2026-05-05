@@ -17,11 +17,9 @@ def run_monitor():
     report = validator.validate(responses, api_info)
     alerts_list = alerts.generate_alerts(report)
 
-    # ✅ IMPORTANT: return data for Flask
     return report, alerts_list
 
 
-# OPTIONAL: keep CLI mode working
 def main():
     report, alerts_list = run_monitor()
 

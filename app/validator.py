@@ -12,7 +12,6 @@ def validate(responses, api_info):
         expected = api["expected"]
 
         expected_time = expected["response_time_ms"]
-        expected_status = expected["status"]
         expected_contains = expected.get("response_contains")
 
         # Speed
