@@ -12,7 +12,7 @@ def run_check():
     reports, issues = run_monitor()
     return jsonify({
         "reports": reports,
-        "issues":  issues,
+        "issues": issues,
     })
 
 if __name__ == "__main__":
