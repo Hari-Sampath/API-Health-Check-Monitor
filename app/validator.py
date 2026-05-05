@@ -29,10 +29,21 @@ def validate(responses, api_info):
 
         if response_contains[j] == "No params":
             valid = "Accurate response provided"
-        elif response_contains[j] in response["output"]:
-            valid = "Accurate response provided"
         else:
-            valid = "Inaccurate response provided"
+            if isinstance(response_contains[j], dict):
+                valid = (
+                    "Accurate response provided"
+                    if expected_contains in response_contains[j]
+                    else "Inaccurate response provided"
+                )
+            elif isinstance(response_contains[j], str):
+                valid = (
+                    "Accurate response provided"
+                    if expected_contains.lower() in response_contains[j].lower()
+                    else "Inaccurate response provided"
+                )
+            else:
+                valid = "Inaccurate response provided"
 
         report.append(
             {
