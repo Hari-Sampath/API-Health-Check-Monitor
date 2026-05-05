@@ -9,17 +9,17 @@ def generate_alerts(report):
         level = None
 
         #  CRITICAL → SYSTEM FAILURE
-        if api["Health"] == "Faulty":
+        if api["health"] == "Faulty":
             issues.append("API DOWN")
             level = "CRITICAL"
 
         #  WARNING → PERFORMANCE ISSUE
-        elif "Slower" in api["Speed"]:
+        elif "Slower" in api["speed"]:
             issues.append("SLOW")
             level = "WARNING"
 
         # ℹ INFO → DATA ISSUE
-        if api["Validity"] == "Inaccurate response provided":
+        if api["valid"] == "Inaccurate response provided":
             issues.append("BAD DATA")
             if not level:
                 level = "INFO"
@@ -27,10 +27,10 @@ def generate_alerts(report):
         if issues:
             alerts.append(
                 {
-                    "Level": level,
-                    "Api": api["Name"],
-                    "Message": ", ".join(issues),
-                    "Timestamp": datetime.now().isoformat(),
+                    "level": level,
+                    "api": api["Name"],
+                    "message": ", ".join(issues),
+                    "timestamp": datetime.now().isoformat(),
                 }
             )
 
