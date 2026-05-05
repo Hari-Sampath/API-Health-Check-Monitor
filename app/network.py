@@ -68,6 +68,7 @@ def get_status(api_config, global_settings):
                             "api_name": api["name"],
                             "response_code": "ERROR",
                             "time": 0,
+                            "output": "NONE",
                         }
                     )
 

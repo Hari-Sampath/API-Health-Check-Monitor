@@ -32,16 +32,16 @@ def validate(responses, api_info):
         if response_contains[j] == "No params":
             valid = "Accurate response provided"
         else:
-            if isinstance(response_contains[j], dict):
+            if isinstance(response["output"], dict):
                 valid = (
                     "Accurate response provided"
-                    if expected_contains in response_contains[j]
+                    if response_contains[j] in response["output"]
                     else "Inaccurate response provided"
                 )
-            elif isinstance(response_contains[j], str):
+            elif isinstance(response["output"], str):
                 valid = (
                     "Accurate response provided"
-                    if expected_contains.lower() in response_contains[j].lower()
+                    if response_contains[j].lower() in response["output"].lower()
                     else "Inaccurate response provided"
                 )
             else:

@@ -19,6 +19,13 @@ def main():
     report = validate(responses, api_info)
     issues = generate_alerts(report)
 
+    print(report[0])
+    print(report[1])
+    print(report[2])
+    print(issues[0])
+    print(issues[1])
+    print(issues[2])
+
 
 if __name__ == "__main__":
     main()
