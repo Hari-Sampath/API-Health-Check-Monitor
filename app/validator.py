@@ -22,7 +22,9 @@ def validate(responses, api_info):
         else:
             speed = "Expected speed"
 
-        if expected_status[j] == response["response_code"]:
+        if response["response_code"] == "ERROR":
+            health = "Faulty"
+        elif 200 <= response["response_code"] < 300:
             health = "Healthy"
         else:
             health = "Faulty"
@@ -53,6 +55,6 @@ def validate(responses, api_info):
                 "Validity": valid,
             }
         )
-    j += 1
+        j += 1
 
     return report

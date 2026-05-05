@@ -6,16 +6,18 @@ from validator import validate
 
 def main():
 
-    with open("apis.yaml", "r") as yaml_data:
-        yaml_file = yaml.safe_load(yaml_data)
+    # Load configuration
+    with open("apis.yaml", "r", encoding="utf-8") as yaml_data:
+        config = yaml.safe_load(yaml_data)
 
-    global_settings = yaml_file["settings"]  # global settings
-    api_info = yaml_file["apis"]  # list with information of apis
+    # Extract settings and API list
+    global_settings = config["settings"]
+    api_info = config["apis"]
 
-    responses = get_status(api_info, global_settings)  # sending api request and fetching response # fmt: skip
-    report = validate(responses, api_info)  # checking validity of response
+    # Process APIs
+    responses = get_status(api_info, global_settings)
+    report = validate(responses, api_info)
     issues = generate_alerts(report)
-    print(issues)
 
 
 if __name__ == "__main__":
