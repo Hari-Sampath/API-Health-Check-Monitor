@@ -22,29 +22,7 @@ def run_monitor():
 
 def main():
     report, alerts_list = run_monitor()
-
-    print("\nAPI HEALTH REPORT")
-    print("-" * 90)
-    print(f"{'API Name':30} | {'Health':10} | {'Speed':20} | {'Validation'}")
-    print("-" * 90)
-
-    for api in report:
-        print(
-            f"{api['Name']:30} | {api['health']:10} | {api['speed']:20} | {api['valid']}"
-        )
-
-    print("-" * 90)
-
-    print("\nALERTS")
-    print("-" * 40)
-
-    if not alerts_list:
-        print("No alerts 🚀")
-    else:
-        for alert in alerts_list:
-            print(alert)
-
-    print("-" * 40)
+    storage.save_logs(report, alerts_list)
 
 
 if __name__ == "__main__":
