@@ -424,9 +424,22 @@
                         </div>
                     </div>
                 </div>
-                <button class="mon-run-btn" id="runBtn" onclick="runCheck()">
-                    <span id="btnIcon">▶</span> Run Check
-                </button>
+                <div style="display: flex; gap: 10px; align-items: center">
+                    <a
+                        href="/download-logs"
+                        class="mon-run-btn"
+                        style="text-decoration: none"
+                    >
+                        ⬇ Download Logs
+                    </a>
+                    <button
+                        class="mon-run-btn"
+                        id="runBtn"
+                        onclick="runCheck()"
+                    >
+                        <span id="btnIcon">▶</span> Run Check
+                    </button>
+                </div>
             </div>
 
             <!-- Stats Section -->
