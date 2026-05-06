@@ -3,7 +3,6 @@ import os
 
 
 def save_logs(report_list, alerts_list):
-
     log_dir = "logs"
 
     os.makedirs(log_dir, exist_ok=True)
