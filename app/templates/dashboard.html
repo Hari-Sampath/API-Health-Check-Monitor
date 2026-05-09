@@ -425,6 +425,28 @@
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center">
+                    <!-- Auto-scheduler countdown pill -->
+                    <div
+                        id="schedulerPill"
+                        style="
+                            display: none;
+                            align-items: center;
+                            gap: 6px;
+                            padding: 6px 14px;
+                            border-radius: 999px;
+                            background: #f0f6ff;
+                            border: 1px solid #c7deff;
+                            font-size: 12px;
+                            font-weight: 500;
+                            color: #0064cc;
+                            white-space: nowrap;
+                        "
+                    >
+                        <span id="schedulerIcon" style="font-size: 14px"
+                            >⏱</span
+                        >
+                        <span id="schedulerLabel">Next check in —</span>
+                    </div>
                     <a
                         href="/download-logs"
                         class="mon-run-btn"
@@ -443,7 +465,10 @@
             </div>
 
             <!-- Stats Section -->
-            <div class="mon-stats">
+            <div
+                class="mon-stats"
+                style="grid-template-columns: repeat(5, 1fr)"
+            >
                 <div class="mon-stat-card">
                     <div class="mon-stat-num" id="total">—</div>
                     <div class="mon-stat-label">Total APIs</div>
@@ -469,6 +494,26 @@
                         —
                     </div>
                     <div class="mon-stat-label">Last Run</div>
+                </div>
+                <div
+                    class="mon-stat-card"
+                    style="background: #f0f6ff; border: 1px solid #c7deff"
+                >
+                    <div
+                        class="mon-stat-num"
+                        id="nextRunCard"
+                        style="
+                            font-size: 20px;
+                            margin-top: 10px;
+                            margin-bottom: 6px;
+                            color: #0064cc;
+                        "
+                    >
+                        —
+                    </div>
+                    <div class="mon-stat-label" style="color: #0064cc">
+                        Next Auto-Check
+                    </div>
                 </div>
             </div>
 
@@ -544,6 +589,74 @@
             // Pagination State for APIs
             let currentPage = 1;
             const itemsPerPage = 10;
+
+            // --- Scheduler Polling ---
+            let _schedulerSecondsLeft = null;
+            let _schedulerRunCount = 0;
+
+            function fmtCountdown(secs) {
+                if (secs == null || secs < 0) return "—";
+                const m = Math.floor(secs / 60);
+                const s = secs % 60;
+                return m > 0 ? `${m}m ${String(s).padStart(2, "0")}s` : `${s}s`;
+            }
+
+            async function pollScheduler() {
+                try {
+                    const res = await fetch("/scheduler-status");
+                    if (!res.ok) return;
+                    const data = await res.json();
+
+                    const pill = document.getElementById("schedulerPill");
+                    const icon = document.getElementById("schedulerIcon");
+                    const label = document.getElementById("schedulerLabel");
+                    const nextCard = document.getElementById("nextRunCard");
+
+                    pill.style.display = "flex";
+
+                    if (data.running) {
+                        icon.textContent = "🔄";
+                        label.textContent = "Checking now…";
+                        if (nextCard) nextCard.textContent = "Running…";
+                    } else {
+                        _schedulerSecondsLeft = data.seconds_until_next;
+                        icon.textContent = "⏱";
+                        const cd = fmtCountdown(_schedulerSecondsLeft);
+                        label.textContent = `Next check in ${cd}`;
+                        if (nextCard) nextCard.textContent = cd;
+                    }
+
+                    // If scheduler ran a new cycle, refresh dashboard automatically
+                    if (
+                        data.run_count > _schedulerRunCount &&
+                        data.reports &&
+                        data.reports.length > 0
+                    ) {
+                        _schedulerRunCount = data.run_count;
+                        allReports = data.reports;
+                        allIssues = data.issues;
+                        updateDashboard();
+                    } else if (_schedulerRunCount === 0 && data.run_count > 0) {
+                        _schedulerRunCount = data.run_count;
+                    }
+                } catch (e) {
+                    /* server not up yet — ignore */
+                }
+            }
+
+            // Tick countdown every second client-side
+            setInterval(() => {
+                if (_schedulerSecondsLeft == null) return;
+                _schedulerSecondsLeft = Math.max(0, _schedulerSecondsLeft - 1);
+                const label = document.getElementById("schedulerLabel");
+                const nextCard = document.getElementById("nextRunCard");
+                const cd = fmtCountdown(_schedulerSecondsLeft);
+                if (label) label.textContent = `Next check in ${cd}`;
+                if (nextCard) nextCard.textContent = cd;
+            }, 1000);
+
+            // Poll server every 5 s
+            setInterval(pollScheduler, 5000);
 
             // --- Helpers ---
             function isOk(h) {
@@ -795,6 +908,9 @@
 
             // Restore on page load
             window.addEventListener("DOMContentLoaded", () => {
+                // Kick off scheduler polling immediately
+                pollScheduler();
+
                 const storedReports = localStorage.getItem("mon_reports");
                 const storedIssues = localStorage.getItem("mon_issues");
                 const storedTime = localStorage.getItem("mon_lastRun");
